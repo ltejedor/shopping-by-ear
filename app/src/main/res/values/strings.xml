@@ -5,4 +5,8 @@
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
 
+    <string name="opening_prompt">Welcome to clothing to ear! Tap the screen to start</string>
+    <string name="speech_prompt">What kind of clothing are you looking for?</string>
+
+    <string name="speech_not_supported">Error: Speech not supported</string>
 </resources>
