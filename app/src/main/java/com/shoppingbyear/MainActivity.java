@@ -1,8 +1,10 @@
 package com.shoppingbyear;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
+import android.os.Build;
 import android.speech.tts.TextToSpeech;
 
 import android.support.v7.app.ActionBarActivity;
@@ -84,6 +86,7 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
         textToSpeech = new TextToSpeech(this, new TextToSpeech.OnInitListener() {
 
 
+            @TargetApi(Build.VERSION_CODES.LOLLIPOP)
             @Override
             public void onInit(int status)
             {
@@ -98,7 +101,7 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
                     else
                     {
                         Log.d("TextToSpeech","Success");
-                        tts.speak("O M G YES", TextToSpeech.QUEUE_ADD, null, null);
+                        tts.speak("Hello. What kind of clothes are you looking for?", TextToSpeech.QUEUE_ADD, null, null);
 
                     }
                 }
@@ -121,12 +124,6 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
                 intent.putExtra(RecognizerIntent.EXTRA_PROMPT,
                         getString(R.string.speech_prompt));
 
-                new Thread(new Runnable() {
-                    public void run() {
-                        getMaciesClothes();
-
-                    }
-                }).start();
 
 
                 try
@@ -153,8 +150,15 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
             {
                 if (resultCode == RESULT_OK && null != data)
                 {
-                    ArrayList<String> result = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
+                    final ArrayList<String> result = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
+                    //result.get(0) is what has been said
                     Log.d("MainActivity.java", "You said: " + result.get(0));
+                    new Thread(new Runnable() {
+                        public void run() {
+                            getMaciesClothes(result.get(0));
+
+                        }
+                    }).start();
 
                     //next step
                 }
@@ -186,7 +190,8 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
     }
 
 
-    public static void getMaciesClothes(){
+    public static void getMaciesClothes(String said){
+
         //Map<String, String> headers = new HashMap<>();
         //headers.put("", "atthack2015");
 
@@ -198,10 +203,14 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
         HttpClient httpclient = new DefaultHttpClient();
 
         // Prepare a request object
-        String url ="http://api.macys.com/v4/catalog/product/2298660";
+
+        //String url ="http://api.macys.com/v4/catalog/product/2298660";
+        String url ="http://api.macys.com/v4/catalog/search?searchphrase=yellow";
         HttpGet httpget = new HttpGet(url);
         httpget.setHeader("accept", "application/json");
         httpget.setHeader("x-macys-webservice-client-id", "atthack2015");
+      //  httpget.setHeader("search phrase", "yellow");
+
         // Execute the request
         HttpResponse response;
         try {
