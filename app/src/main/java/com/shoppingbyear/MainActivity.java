@@ -205,7 +205,7 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
         // Prepare a request object
 
         //String url ="http://api.macys.com/v4/catalog/product/2298660";
-        String url ="http://api.macys.com/v4/catalog/search?searchphrase=yellow";
+        String url ="http://api.macys.com/v4/catalog/search?searchphrase="+said;
         HttpGet httpget = new HttpGet(url);
         httpget.setHeader("accept", "application/json");
         httpget.setHeader("x-macys-webservice-client-id", "atthack2015");
