@@ -24,6 +24,7 @@ import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
@@ -196,7 +197,7 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
         //headers.put("", "atthack2015");
 
         android.util.Log.v("Status ", "Trying ");
-        //String dataUrl = "http://api.macys.com/v4/catalog/product/2298660";
+        //String dataUrl = "http://api.com/v4/catalog/product/2298660";
 
         //    connection.setRequestProperty("accept", "application/json");
         //    connection.setRequestProperty("x-macys-webservice-client-id", "atthack2015");
@@ -205,6 +206,9 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
         // Prepare a request object
 
         //String url ="http://api.macys.com/v4/catalog/product/2298660";
+        said = said.replace(" ", "+");
+
+        Log.d("SEARCHING FOR A ", said);
         String url ="http://api.macys.com/v4/catalog/search?searchphrase="+said;
         HttpGet httpget = new HttpGet(url);
         httpget.setHeader("accept", "application/json");
@@ -222,15 +226,29 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
             HttpEntity entity = response.getEntity();
             // If the response does not enclose an entity, there is no need
             // to worry about connection release
-
             if (entity != null) {
 
                 // A Simple JSON Response Read
                 InputStream instream = entity.getContent();
+
                 String result= convertStreamToString(instream);
-                // now you have the string representation of the HTML request
-                instream.close();
+                JSONObject jsob = new JSONObject(result);
                 Log.d("hii", result);
+                Log.d("hee", jsob.get("searchresultgroups").toString());
+
+
+            /*    Log.d("hiiee", "heee" );
+                JSONArray jarray = new JSONArray (result);
+
+                Log.d("thing1", result);
+                Log.d("thing ", jarray.getJSONObject(0).toString());
+
+                String shoppingResult = jarray.getJSONObject(0).toString();
+                Log.d(" 222", jarray.get("searchinput").toString());
+                //Log.d(shoppingResult.searchresultgroups.product.summary.name);
+*/
+                        // now you have the string representation of the HTML request
+                        instream.close();
             }
 
 
