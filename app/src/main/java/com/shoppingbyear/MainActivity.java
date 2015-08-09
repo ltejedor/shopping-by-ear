@@ -35,10 +35,16 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
+import android.speech.tts.TextToSpeech;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.widget.Toast;
 
+import java.util.Locale;
 
 @SuppressWarnings("deprecation")
-public class MainActivity extends Activity {
+public class MainActivity extends Activity implements TextToSpeech.OnInitListener {
+    TextToSpeech tts;
 
     private final int REQ_CODE_SPEECH_INPUT = 100;
 
@@ -49,6 +55,7 @@ public class MainActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        tts = new TextToSpeech(this, this);
 
         OpeningRing();
 
@@ -56,6 +63,19 @@ public class MainActivity extends Activity {
 
         button = (Button)findViewById(R.id.btn);
         button.setOnClickListener(new ButtonClickListener());
+    }
+    @Override
+    public void onInit(int status) {
+
+        if (status == TextToSpeech.SUCCESS) {
+            //isTTSready = true;
+            int result = tts.setLanguage(Locale.US);
+            if (result == TextToSpeech.LANG_MISSING_DATA
+                    | result == TextToSpeech.LANG_NOT_SUPPORTED) {
+                Toast.makeText(getApplicationContext(), "Language is missing",
+                        Toast.LENGTH_LONG).show();
+            }
+        }
     }
 
     void OpeningRing()
@@ -78,7 +98,8 @@ public class MainActivity extends Activity {
                     else
                     {
                         Log.d("TextToSpeech","Success");
-                        textToSpeech.speak(getString(R.string.opening_prompt), TextToSpeech.QUEUE_FLUSH, null);
+                        tts.speak("O M G YES", TextToSpeech.QUEUE_ADD, null, null);
+
                     }
                 }
             }
@@ -99,6 +120,7 @@ public class MainActivity extends Activity {
                 intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault());
                 intent.putExtra(RecognizerIntent.EXTRA_PROMPT,
                         getString(R.string.speech_prompt));
+
                 new Thread(new Runnable() {
                     public void run() {
                         getMaciesClothes();
